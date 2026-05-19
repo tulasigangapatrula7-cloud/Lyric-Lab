@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LyricLab - Creative Workspace</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Share Tech Mono', monospace;
+      color: white;
+      min-height: 100vh;
+      /* 🌄 UNIQUE BACKGROUND: Neon mixing desk */
+      background-image: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.85)), 
+                        url("https://images.unsplash.com/photo-1461749280684-dccba630e2f6?q=80&w=1600&auto=format&fit=crop");
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
+    .back-btn {
+      position: fixed; top: 20px; left: 20px; background: #0f172a; color: #ec4899;
+      border: 2px solid #ec4899; padding: 10px 20px; cursor: pointer; border-radius: 8px;
+      font-family: 'Share Tech Mono', monospace; font-weight: bold;
+    }
+    .back-btn:hover { background: #ec4899; color: white; }
+
+    .container { max-width: 850px; margin: 0 auto; padding: 90px 20px 40px 20px; text-align: center; }
+    h1 { font-size: 2.5rem; margin-bottom: 20px; color: #f1f5f9; }
+    h1 span { color: #ec4899; }
+
+    /* ⬜ LARGE BLANK WORKSPACE TYPING FIELD */
+    .lyrics-textbox {
+      width: 100%;
+      height: 400px;
+      background: #ffffff; /* Solid White Blank Box */
+      border: 3px solid #ec4899;
+      border-radius: 12px;
+      padding: 20px;
+      color: #0f172a; /* Dark text inside white box for ultimate readability */
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 1.2rem;
+      line-height: 1.6;
+      resize: none;
+      outline: none;
+      margin-bottom: 25px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+    }
+
+    .btn-row { display: flex; justify-content: center; gap: 20px; }
+    .action-btn {
+      padding: 14px 35px; font-family: 'Share Tech Mono', monospace; font-size: 1.1rem;
+      font-weight: bold; border: none; border-radius: 8px; cursor: pointer; transition: background 0.2s;
+    }
+    .draft { background: #4b5563; color: white; }
+    .draft:hover { background: #374151; }
+    .publish { background: #ec4899; color: white; }
+    .publish:hover { background: #db2777; }
+  </style>
+</head>
+<body>
+
+  <button class="back-btn" onclick="window.location.href='home.html'">⬅ Back</button>
+
+  <div class="container">
+    <h1 class="song-header">Song Workspace: <span id="targetSongName">Title</span></h1>
+
+    <textarea id="lyricsInput" class="lyrics-textbox" placeholder="Begin writing your rewritten lyrics from scratch here..."></textarea>
+
+    <div class="btn-row">
+      <button class="action-btn draft" onclick="saveAsDraft()">💾 Save Draft</button>
+      <button class="action-btn publish" onclick="publishLyrics()">🚀 Publish</button>
+    </div>
+  </div>
+
+  <script>
+    window.onload = function() {
+      // Catches and sets whatever song was written in the search box
+      const song = localStorage.getItem("currentSearchSong") || "New Track";
+      document.getElementById("targetSongName").innerText = song;
+    };
+
+    function saveAsDraft() {
+      const txt = document.getElementById("lyricsInput").value.trim();
+      if (!txt) { alert("Box is empty!"); return; }
+      
+      let drafts = JSON.parse(localStorage.getItem("myDraftsArray")) || [];
+      drafts.unshift({ title: localStorage.getItem("currentSearchSong"), status: "Draft Saved", text: txt });
+      localStorage.setItem("myDraftsArray", JSON.stringify(drafts));
+      
+      alert("Draft Saved Successfully!");
+      window.location.href = "drafts.html";
+    }
+
+    function publishLyrics() {
+      const txt = document.getElementById("lyricsInput").value.trim();
+      if (!txt) { alert("Box is empty!"); return; }
+
+      let published = JSON.parse(localStorage.getItem("myPublishedArray")) || [];
+      published.unshift({ title: localStorage.getItem("currentSearchSong"), date: new Date().toLocaleDateString(), text: txt });
+      localStorage.setItem("myPublishedArray", JSON.stringify(published));
+
+      alert("Published Successfully!");
+      window.location.href = "published.html";
+    }
+  </script>
+</body>
+</html>

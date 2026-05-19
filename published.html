@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LyricLab - Published Lyrics</title>
+  <link rel="stylesheet" href="published.css">
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+  <style>
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+    }
+    
+    body {
+      font-family: 'Share Tech Mono', monospace; 
+      color: white; 
+      min-height: 100vh;
+      
+      /* 🌄 UNIQUE BACKGROUND: Acoustic Guitar / Microphone Studio URL pasted here */
+      background-image: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.85)), 
+                        url("https://images.unsplash.com/photo-1510915361894-db8b60106cb1?q=80&w=1600&auto=format&fit=crop");
+      
+      background-size: cover; 
+      background-position: center; 
+      background-attachment: fixed;
+    }
+
+    /* Structured layout to neatly hold your published cards */
+    .page-wrapper { max-width: 800px; margin: 0 auto; padding: 90px 20px 40px 20px; text-align: center; }
+    .page-title { font-size: 2.5rem; color: #10b981; margin-bottom: 30px; }
+    .items-container { display: flex; flex-direction: column; gap: 20px; }
+    .lyric-card { background: rgba(30, 41, 59, 0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 25px; text-align: left; box-shadow: 0 8px 20px rgba(0,0,0,0.4); }
+    .card-header { display: flex; justify-content: space-between; align-items: center; }
+    .song-title { font-size: 1.5rem; color: #f1f5f9; }
+    .timestamp { font-size: 0.85rem; color: #10b981; background: rgba(16, 185, 129, 0.15); padding: 4px 10px; border-radius: 12px; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .divider { border: 0; height: 1px; background: rgba(255,255,255,0.1); margin: 15px 0; }
+    .lyrics-body { background: rgba(15, 23, 42, 0.5); padding: 15px; border-radius: 6px; white-space: pre-wrap; font-family: 'Share Tech Mono', monospace; line-height: 1.5; color: #e2e8f0; }
+    
+    .back-btn { position: fixed; top: 20px; left: 20px; background: #0f172a; color: #10b981; border: 2px solid #10b981; padding: 10px 20px; cursor: pointer; border-radius: 8px; font-family: 'Share Tech Mono', monospace; font-weight: bold; z-index: 10; }
+    .back-btn:hover { background: #10b981; color: white; }
+  </style>
+</head>
+<body>
+
+  <button class="back-btn" onclick="goHome()">⬅ Back</button>
+
+  <div class="page-wrapper">
+    <h1 class="page-title">My Published Lyrics</h1>
+    
+    <div id="publishedList" class="items-container"></div>
+  </div>
+
+  <script>
+    function goHome() {
+      window.location.href = "home.html";
+    }
+
+    function loadPublishedLyrics() {
+      const listContainer = document.getElementById("publishedList");
+      
+      let localData = JSON.parse(localStorage.getItem("myPublishedArray"));
+      
+      if (!localData || localData.length === 0) {
+        localData = [
+          { title: "Mockingbird (B.Tech Cover)", date: "May 15, 2026", text: "Yeah, assignment look... \nI know you want to pass this exam, I know you want to clear your labs..." },
+          { title: "Perfect (Coding Version)", date: "May 10, 2026", text: "I found a language, beautiful and sweet... \nI never knew you were the syntax waiting for me..." }
+        ];
+        localStorage.setItem("myPublishedArray", JSON.stringify(localData));
+      }
+
+      listContainer.innerHTML = ""; 
+
+      localData.forEach((item, index) => {
+        const itemCard = document.createElement("div");
+        itemCard.className = "lyric-card";
+        itemCard.innerHTML = `
+          <div class="card-header">
+            <h2 class="song-title">${item.title}</h2>
+            <span class="timestamp">${item.date}</span>
+          </div>
+          <hr class="divider">
+          <pre class="lyrics-body">${item.text}</pre>
+        `;
+        listContainer.appendChild(itemCard);
+      });
+    }
+
+    window.onload = loadPublishedLyrics;
+  </script>
+</body>
+</html>

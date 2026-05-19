@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LyricLab - Explore</title>
+  <link rel="stylesheet" href="explore.css">
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+  <style>
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+    }
+    
+    body {
+      font-family: 'Share Tech Mono', monospace; 
+      color: white; 
+      min-height: 100vh;
+      
+      /* 🌄 UNIQUE BACKGROUND: Live Concert Stage and Crowd URL pasted here */
+      background-image: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.85)), 
+                        url("https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=1600&auto=format&fit=crop");
+      
+      background-size: cover; 
+      background-position: center; 
+      background-attachment: fixed;
+    }
+
+    /* Simple, clean structural layout for your cards */
+    .explore-wrapper { max-width: 800px; margin: 0 auto; padding: 90px 20px 40px 20px; text-align: center; }
+    .page-title { font-size: 2.5rem; color: #06b6d4; margin-bottom: 30px; }
+    .feed-container { display: flex; flex-direction: column; gap: 20px; }
+    .song-card { background: rgba(30, 41, 59, 0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 25px; text-align: left; box-shadow: 0 8px 20px rgba(0,0,0,0.4); }
+    .song-title { font-size: 1.5rem; color: #f1f5f9; margin-bottom: 5px; }
+    .author-tag { color: #94a3b8; font-size: 0.95rem; }
+    .author-tag span { color: #06b6d4; font-weight: bold; }
+    .divider { border: 0; height: 1px; background: rgba(255,255,255,0.1); margin: 15px 0; }
+    .lyrics-display { background: rgba(15, 23, 42, 0.5); padding: 15px; border-radius: 6px; white-space: pre-wrap; font-family: 'Share Tech Mono', monospace; line-height: 1.5; color: #e2e8f0; margin-bottom: 15px; }
+    .like-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 8px 16px; border-radius: 20px; cursor: pointer; font-family: 'Share Tech Mono', monospace; transition: transform 0.1s; }
+    .like-btn:hover { background: rgba(239, 68, 68, 0.15); border-color: #f87171; }
+    .liked { transform: scale(1.15); background: rgba(239, 68, 68, 0.2); border-color: #ef4444; }
+    .back-btn { position: fixed; top: 20px; left: 20px; background: #0f172a; color: #06b6d4; border: 2px solid #06b6d4; padding: 10px 20px; cursor: pointer; border-radius: 8px; font-family: 'Share Tech Mono', monospace; font-weight: bold; z-index: 10; }
+    .back-btn:hover { background: #06b6d4; color: white; }
+  </style>
+</head>
+<body>
+
+  <button class="back-btn" onclick="goHome()">⬅ Back</button>
+
+  <div class="explore-wrapper">
+    <h1 class="page-title">Community Explore Feed</h1>
+    
+    <div id="feedContainer" class="feed-container"></div>
+  </div>
+
+  <script>
+    function goHome() {
+      window.location.href = "home.html";
+    }
+
+    const communityData = [
+      {
+        id: 1,
+        songName: "Believer (B.Tech Remake)",
+        author: "Rahul Sharma",
+        lyrics: "First things first\nI am reading the books inside my room\nI'm stressed out and tired of the way\nThis calculus looks, oh-ooh\nThe way this calculus looks, oh-ooh...",
+        likes: 24
+      },
+      {
+        id: 2,
+        songName: "Shape of You (Coding Version)",
+        author: "Sneha Reddy",
+        lyrics: "The club isn't the best place to find a bug\nSo the compiler is where I go\nMe and my friends at the desk doing shots of espresso\nChatting fast and coding slow...",
+        likes: 42
+      },
+      {
+        id: 3,
+        songName: "Counting Stars (Exam Season)",
+        author: "Amit Verma",
+        lyrics: "Lately, I've been, I've been losing sleep\nDreaming about the grades that we could keep\nBut baby, I've been, I've been praying hard\nSaid no more counting marks\nWe'll be counting stars...",
+        likes: 18
+      }
+    ];
+
+    function loadExploreFeed() {
+      const container = document.getElementById("feedContainer");
+      container.innerHTML = ""; 
+
+      communityData.forEach(item => {
+        const card = document.createElement("div");
+        card.className = "song-card";
+
+        card.innerHTML = `
+          <h2 class="song-title">${item.songName}</h2>
+          <p class="author-tag">Written by: <span>${item.author}</span></p>
+          <hr class="divider">
+          <pre class="lyrics-display">${item.lyrics}</pre>
+          <div class="card-footer">
+            <button class="like-btn" onclick="handleLike(${item.id})">❤️ <span id="like-count-${item.id}">${item.likes}</span></button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function handleLike(id) {
+      const likeSpan = document.getElementById(`like-count-${id}`);
+      let currentLikes = parseInt(likeSpan.innerText);
+      
+      likeSpan.innerText = currentLikes + 1;
+      
+      const btn = likeSpan.parentElement;
+      btn.classList.add("liked");
+      setTimeout(() => btn.classList.remove("liked"), 200);
+    }
+
+    window.onload = loadExploreFeed;
+  </script>
+</body>
+</html>

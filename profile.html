@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LyricLab - Profile</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Share Tech Mono', monospace; color: white; height: 100vh;
+      display: flex; justify-content: center; align-items: center;
+      /* 🌄 UNIQUE BACKGROUND: Dark record studio setup */
+      background-image: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.85)), 
+                        url("https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=1600&auto=format&fit=crop");
+      background-size: cover; background-position: center;
+    }
+    .back-btn { position: fixed; top: 20px; left: 20px; background: #0f172a; color: #a855f7; border: 2px solid #a855f7; padding: 10px 20px; cursor: pointer; border-radius: 8px; font-family: 'Share Tech Mono', monospace; font-weight: bold; }
+    .back-btn:hover { background: #a855f7; color: #0f172a; }
+
+    .profile-card { background: rgba(30, 41, 59, 0.8); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; padding: 40px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.5); }
+    
+    .avatar-wrapper { display: flex; flex-direction: column; align-items: center; margin-bottom: 20px; }
+    .profile-card img { width: 130px; height: 130px; border-radius: 50%; object-fit: cover; border: 3px solid #a855f7; margin-bottom: 12px; }
+    
+    /* INTERACTIVE CHANGE LAYER STYLING */
+    .change-photo-lbl { color: #c084fc; cursor: pointer; text-decoration: underline; font-size: 0.9rem; margin-bottom: 10px;}
+    .change-photo-lbl:hover { color: #e9d5ff; }
+    #hiddenFileInput { display: none; }
+
+    h2 { font-size: 1.8rem; margin-bottom: 10px; color: #f1f5f9; }
+    p { color: #94a3b8; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; }
+  </style>
+</head>
+<body>
+
+  <button class="back-btn" onclick="window.location.href='home.html'">⬅ Back</button>
+
+  <div class="profile-card">
+    <div class="avatar-wrapper">
+      <img id="activePhoto" src="" alt="Profile Image">
+      
+      <label for="hiddenFileInput" class="change-photo-lbl">Change Profile Picture</label>
+      <input type="file" id="hiddenFileInput" accept="image/*" onchange="modifyProfilePic(event)">
+    </div>
+
+    <p>Logged In As</p>
+    <h2 id="activeUser">Username</h2>
+  </div>
+
+  <script>
+    window.onload = function() {
+      loadProfileDetails();
+    };
+
+    function loadProfileDetails() {
+      document.getElementById("activeUser").innerText = localStorage.getItem("username") || "Guest Composer";
+      document.getElementById("activePhoto").src = localStorage.getItem("userPic") || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=150&auto=format&fit=crop";
+    }
+
+    // HANDLES UPDATING PICTURE DIRECTLY FROM WITHIN THE PROFILE VIEW
+    function modifyProfilePic(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function() {
+        // Overwrite image string value inside browser hardware memory
+        localStorage.setItem("userPic", reader.result);
+        
+        // Refresh local items dynamically instantly on page layout screen
+        document.getElementById('activePhoto').src = reader.result;
+        alert("Profile picture updated successfully!");
+      }
+      reader.readAsDataURL(file);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LyricLab - Saved Drafts</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { min-height: 100%; width: 100%; font-family: 'Share Tech Mono', monospace; color: white; }
+
+    /* 🌄 UNIQUE DRAFTS BACKGROUND (Cassette / Vintage Music Theme) */
+    body {
+      background-image: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.85)), 
+                        url("https://images.unsplash.com/photo-1547941126-3d5322b218b0?q=80&w=1600&auto=format&fit=crop");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+    }
+
+    .back-btn {
+      position: fixed; top: 20px; left: 20px; background: #0f172a; color: #f59e0b;
+      border: 2px solid #f59e0b; padding: 10px 20px; cursor: pointer; border-radius: 8px;
+      font-family: 'Share Tech Mono', monospace; font-size: 1rem; font-weight: bold; z-index: 1000;
+    }
+    .back-btn:hover { background: #f59e0b; color: #0f172a; }
+
+    .page-wrapper { max-width: 800px; margin: 0 auto; padding: 80px 20px 40px 20px; text-align: center; }
+    .page-title { font-size: 2.5rem; color: #f59e0b; margin-bottom: 40px; }
+
+    .items-container { display: flex; flex-direction: column; gap: 25px; }
+
+    .lyric-card {
+      background: rgba(30, 41, 59, 0.75); border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px; padding: 25px; text-align: left; box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    }
+    .card-header { display: flex; justify-content: space-between; align-items: center; }
+    .song-title { font-size: 1.5rem; color: #f1f5f9; }
+    .status-badge { font-size: 0.85rem; color: #f59e0b; background: rgba(245, 158, 11, 0.15); padding: 4px 10px; border-radius: 12px; border: 1px solid rgba(245, 158, 11, 0.3); }
+    .divider { border: 0; height: 1px; background: rgba(255,255,255,0.1); margin: 15px 0; }
+    
+    /* DIRECT TEXT EDITING AREA BOXES INSIDE DRAFT CARDS */
+    .draft-editable-textarea {
+      width: 100%; height: 180px; background: #ffffff; border: 2px solid #f59e0b;
+      border-radius: 6px; padding: 12px; color: #0f172a; font-family: 'Share Tech Mono', monospace;
+      font-size: 1.05rem; line-height: 1.5; resize: vertical; outline: none; margin-bottom: 15px;
+    }
+
+    /* Action button container row alignment */
+    .card-actions { display: flex; justify-content: flex-end; gap: 15px; }
+    
+    .action-btn {
+      padding: 8px 18px; font-family: 'Share Tech Mono', monospace; font-weight: bold; 
+      cursor: pointer; border-radius: 4px; border: none; transition: background 0.2s, color 0.2s;
+    }
+
+    .save-change-btn { background: #f59e0b; color: #0f172a; }
+    .save-change-btn:hover { background: #d97706; }
+
+    /* 🗑️ NEW RED DELETE BUTTON STYLING */
+    .delete-draft-btn { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); }
+    .delete-draft-btn:hover { background: #ef4444; color: white; border-color: #ef4444; }
+  </style>
+</head>
+<body>
+
+  <button class="back-btn" onclick="window.location.href='home.html'">⬅ Back</button>
+
+  <div class="page-wrapper">
+    <h1 class="page-title">Saved Drafts</h1>
+    
+    <div id="draftsList" class="items-container"></div>
+  </div>
+
+  <script>
+    // Load drafts from array storage or create default example entries if totally empty
+    function loadDrafts() {
+      const listContainer = document.getElementById("draftsList");
+      let localDrafts = JSON.parse(localStorage.getItem("myDraftsArray"));
+      
+      if (!localDrafts || localDrafts.length === 0) {
+        localDrafts = [
+          { title: "Despacito Remix", status: "Draft Saved", text: "Step by step, writing lyrics slowly..." },
+          { title: "Believer Remake", status: "Draft Saved", text: "First things first, changing up the track inside my head..." }
+        ];
+        localStorage.setItem("myDraftsArray", JSON.stringify(localDrafts));
+      }
+
+      listContainer.innerHTML = ""; 
+
+      // Display each draft item inside its own white editable text box container
+      localDrafts.forEach((item, index) => {
+        const itemCard = document.createElement("div");
+        itemCard.className = "lyric-card";
+        itemCard.innerHTML = `
+          <div class="card-header">
+            <h2 class="song-title">${item.title}</h2>
+            <span class="status-badge">${item.status}</span>
+          </div>
+          <hr class="divider">
+          
+          <textarea id="draftText-${index}" class="draft-editable-textarea">${item.text}</textarea>
+          
+          <div class="card-actions">
+            <button class="action-btn delete-draft-btn" onclick="deleteDraft(${index})">🗑️ Delete</button>
+            <button class="action-btn save-change-btn" onclick="updateDraftContents(${index})">💾 Save Changes</button>
+          </div>
+        `;
+        listContainer.appendChild(itemCard);
+      });
+    }
+
+    // Capture modifications and overwrite the specific array slot inside local storage
+    function updateDraftContents(index) {
+      let localDrafts = JSON.parse(localStorage.getItem("myDraftsArray"));
+      const updatedText = document.getElementById(`draftText-${index}`).value.trim();
+
+      if (!updatedText) {
+        alert("Draft content box cannot be saved empty!");
+        return;
+      }
+
+      // Modify the target array position directly
+      localDrafts[index].text = updatedText;
+      localDrafts[index].status = "Updated Just Now";
+
+      localStorage.setItem("myDraftsArray", JSON.stringify(localDrafts));
+      alert("Draft changes saved successfully!");
+      loadDrafts(); // Reload layout view dynamically to show new timestamp
+    }
+
+    // 🗑️ NEW DELETE LOGIC FUNCTION: Permanently splices out index from browser hardware layer
+    function deleteDraft(index) {
+      if (confirm("Are you sure you want to permanently delete this draft?")) {
+        let localDrafts = JSON.parse(localStorage.getItem("myDraftsArray"));
+        
+        // Remove 1 item at the chosen array position
+        localDrafts.splice(index, 1);
+        
+        // Update device system layout with new array configuration
+        localStorage.setItem("myDraftsArray", JSON.stringify(localDrafts));
+        
+        // Refresh workspace view instantly
+        loadDrafts();
+      }
+    }
+
+    window.onload = loadDrafts;
+  </script>
+</body>
+</html>

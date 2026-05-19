@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LyricLab - Registration</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Share Tech Mono', monospace;
+      color: white;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      /* 🌄 UNIQUE BACKGROUND: Headphones setup */
+      background-image: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), 
+                        url("https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=1600&auto=format&fit=crop");
+      background-size: cover;
+      background-position: center;
+    }
+    .reg-box {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 40px;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+    }
+    h2 { margin-bottom: 25px; letter-spacing: 1px; }
+    .avatar-picker { margin-bottom: 20px; display: flex; flex-direction: column; align-items: center; }
+    .avatar-picker img { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 3px solid #c084fc; margin-bottom: 10px; }
+    .avatar-picker label { color: #c084fc; cursor: pointer; text-decoration: underline; font-size: 0.9rem; }
+    .avatar-picker input { display: none; }
+    input[type="text"], input[type="password"] {
+      width: 100%; padding: 12px; margin-bottom: 18px;
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 6px; color: white; font-family: 'Share Tech Mono', monospace; font-size: 1rem;
+    }
+    input:focus { border-color: #c084fc; outline: none; }
+    .reg-btn {
+      width: 100%; background: #a855f7; color: white; border: none; padding: 14px;
+      border-radius: 6px; font-family: 'Share Tech Mono', monospace; font-size: 1.1rem; font-weight: bold; cursor: pointer;
+    }
+    .reg-btn:hover { background: #9333ea; }
+  </style>
+</head>
+<body>
+
+  <div class="reg-box">
+    <h2>Create Account</h2>
+    
+    <div class="avatar-picker">
+      <img id="displayAvatar" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=150&auto=format&fit=crop" alt="Avatar">
+      <label for="fileInput">Choose Profile Pic</label>
+      <input type="file" id="fileInput" accept="image/*" onchange="uploadPic(event)">
+    </div>
+
+    <input type="text" id="username" placeholder="Username" required>
+    <input type="password" id="password" placeholder="Password" required>
+    
+    <button class="reg-btn" onclick="registerUser()">Register</button>
+  </div>
+  <script>
+  // 🔄 INSTAGRAM-STYLE SESSION CHECK (Runs instantly when the page loads)
+  window.onload = function() {
+    const existingUser = localStorage.getItem("username");
+    
+    // If a username is already saved on this device, bypass this page completely!
+    if (existingUser) {
+      window.location.href = "home.html";
+    }
+  };
+
+  // Handles Profile Picture uploads
+  function uploadPic(event) {
+    const reader = new FileReader();
+    reader.onload = function() {
+      document.getElementById('displayAvatar').src = reader.result;
+      localStorage.setItem("userPic", reader.result);
+    }
+    reader.readAsDataURL(event.target.files[0]);
+  }
+
+  // Handles Initial Registration
+  function registerUser() {
+    const u = document.getElementById("username").value.trim();
+    const p = document.getElementById("password").value.trim();
+
+    if (!u || !p) {
+      alert("Please fill in both fields!");
+      return;
+    }
+
+    // Save details to the device memory permanently
+    localStorage.setItem("username", u);
+    localStorage.setItem("password", p);
+    
+    if (!localStorage.getItem("userPic")) {
+      localStorage.setItem("userPic", "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=150&auto=format&fit=crop");
+    }
+
+    // Go to the main dashboard
+    window.location.href = "home.html";
+  }
+</script>
+
+  
+  
+</body>
+</html>
